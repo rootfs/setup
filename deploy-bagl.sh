@@ -5,10 +5,11 @@ then
     echo "remote_pass=" >> pass.cfg
 fi
 source ./nodes.cfg
+source ./pass.cfg
 for i in ${nodes[@]}
 do
 echo $i
-sshpass -p redhat ssh root@${i} "mkdir -p /tmp/bd"
+sshpass -p  ${remote_pass} ssh root@${i} "mkdir -p /tmp/bd"
 for f in "init.sh" "setup.sh" "*.jar" "sshpass" "nodes.cfg" "pass.cfg"
 do 
     sshpass -p ${remote_pass} scp $f root@${i}:/tmp/bd
