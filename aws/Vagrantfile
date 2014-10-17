@@ -7,9 +7,12 @@ Vagrant.configure("2") do |config|
   config.vm.provider :aws do |aws, override|
     aws.keypair_name = "aws-east"
     aws.security_groups =  	["test"]
-    aws.ami = "ami-7747d01e"
+    # RHEL 6.5
+    aws.ami = "ami-b06a98d8"
     aws.region = "us-east-1"
-    override.ssh.username = "ubuntu"
+    aws.user_data = "#!/bin/bash\necho 'Defaults:ec2-user !requiretty' > /etc/sudoers.d/999-vagrant-cloud-init-requiretty && chmod 440 /etc/sudoers.d/999-vagrant-cloud-init-requiretty"    
+
+    override.ssh.username = "ec2-user"
     override.ssh.private_key_path = "~/.ssh/aws-east.pem"
   end
 end
