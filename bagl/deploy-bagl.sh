@@ -9,6 +9,10 @@ source ./pass.cfg
 for i in ${nodes[@]}
 do
 echo $i
+
+wget https://repo.maven.apache.org/maven2/com/ceph/fs/cephfs-hadoop/0.80.6/cephfs-hadoop-0.80.6.jar
+wget https://repo.maven.apache.org/maven2/com/ceph/libcephfs/0.80.5/libcephfs-0.80.5.jar
+
 sshpass -p  ${remote_pass} ssh root@${i} "mkdir -p /tmp/bd"
 for f in "init.sh" "setup.sh" "*.jar" "sshpass" "nodes.cfg" "pass.cfg"
 do 
