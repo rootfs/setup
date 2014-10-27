@@ -99,7 +99,13 @@ EOF
 else    
     ln -fs `pwd`/hadoop/etc/hadoop/core-site.xml.ceph hadoop/etc/hadoop/core-site.xml
     #FIXME
-    ln -fs /usr/lib/jni/libcephfs_jni.so /home/hadoop/hadoop/lib/native/
+    rm  /home/hadoop/hadoop/lib/native/libcephfs_jni.so
+    if [ -f /usr/lib64/libcephfs_jni.so.1.0.0 ]
+    then
+        ln -fs /usr/lib64/libcephfs_jni.so.1.0.0 /home/hadoop/hadoop/lib/native/libcephfs_jni.so
+    else
+        ln -fs /usr/lib/jni/libcephfs_jni.so /home/hadoop/hadoop/lib/native/
+    fi
 fi
 
 cat > hadoop/etc/hadoop/mapred-site.xml << EOF
