@@ -76,4 +76,11 @@ then
     
 #should see cephfs mounted  
     mount  
+    # install jni
+    for i in ${nodes[@]}
+    do
+        echo $i
+        ssh root@${i} yum install -y libcephfs_jni1
+    done
+
 fi # if mds
