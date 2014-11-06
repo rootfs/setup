@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
     os.endpoint     = "http://control.os1.phx2.redhat.com:5000/v2.0/tokens"      # e.g. "#{ENV['OS_AUTH_URL']}/tokens"
     os.security_groups    = 'default'
     os.server_name = "my-machine"
-    os.ssh_username = "root"           # login for the VM
+    os.ssh_username = "centos"           # login for the VM
     os.keypair_name = "hchen"
     os.floating_ip = "10.3.10.87"
   end
