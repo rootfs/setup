@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+@cmd = YAML.load_file('secrete.yml')
+
+USERNAME=@cmd['name']
+PASSWORD=@cmd['password']
+
+require 'vagrant-openstack-plugin'
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "dummy"
+  config.vm.box_url = "https://github.com/cloudbau/vagrant-openstack-plugin/raw/master/dummy.box"
+
+  # Make sure the private key from the key pair is provided
+  config.ssh.private_key_path = "/data/git/setup/openshift/hchen.pem"
+
+  config.vm.provider :openstack do |os|
+    os.username     = USERNAME          # e.g. "#{ENV['OS_USERNAME']}"
+    os.api_key      = PASSWORD           # e.g. "#{ENV['OS_PASSWORD']}"
+    os.flavor       = "m1.tiny"                # Regex or String
+    os.image        = /CentOS/
+    os.endpoint     = "http://control.os1.phx2.redhat.com:5000/v2.0/tokens"      # e.g. "#{ENV['OS_AUTH_URL']}/tokens"
+    os.security_groups    = 'default'
+    os.server_name = "my-machine"
+    os.ssh_username = "root"           # login for the VM
+  end
+end
