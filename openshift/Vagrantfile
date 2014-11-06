@@ -26,5 +26,7 @@ Vagrant.configure("2") do |config|
     os.security_groups    = 'default'
     os.server_name = "my-machine"
     os.ssh_username = "root"           # login for the VM
+    os.keypair_name = "hchen"
+    os.floating_ip = "10.3.10.87"
   end
 end
