@@ -64,7 +64,12 @@ then
     for i in ${nodes[@]}
     do
         ceph-deploy disk zap ${i}:sd{c,d,e,f,g,h,i,j,k,l,m}
-        ceph-deploy osd create ${i}:sd{c,d,e,f,g,h,i,j}:sd{k,l,m}
+        ceph-deploy osd create ${i}:sdc:sdd
+#        ceph-deploy osd create ${i}:sd:sde
+        ceph-deploy osd create ${i}:sdf:sdg
+        ceph-deploy osd create ${i}:sdh:sdi
+        ceph-deploy osd create ${i}:sdj:sdk
+        ceph-deploy osd create ${i}:sdl:sdm
     done
 
     ceph-deploy --overwrite-conf admin ${cluster}
