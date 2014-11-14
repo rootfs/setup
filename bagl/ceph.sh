@@ -99,12 +99,18 @@ then
         ssh root@${i} yum install -y libcephfs_jni1
     done
 
+    ceph osd pool create cephfs_data 4096
+    ceph osd pool create cephfs_metadata 4096
+    ceph fs new cephfs cephfs_metadata cephfs_data
+
 #mount ceph fs  
     yum install -y ceph-fuse  
     mkdir -p /mnt/ceph 
     umount /mnt/ceph 
-    ceph-fuse -m ${mds}:6789 /mnt/ceph  
-    
+    pkill -9 ceph-fuse
+    timeout 60s ceph-fuse -m ${mds}:6789 /mnt/ceph  
+    ret=$?
+    echo "mount status " ${ret}
 #should see cephfs mounted  
     mount  
 
