@@ -30,26 +30,28 @@ do
     ./sshpass -p ${password} ssh-copy-id $i  
 done
 
-# clean up ceph installation first
-for i in ${nodes[@]}
-do
-    ssh root@${i} /etc/init.d/ceph killall
-done
-
-ceph-deploy purge ${cluster}
-ceph-deploy forgetkeys
-for i in ${nodes[@]}
-do
-    ssh root@${i} "/etc/init.d/ceph killall; umount /var/lib/ceph/osd/ceph-*; rm -rf /var/lib/ceph; rm -rf /var/run/ceph"
-done
-
-
 # choose the last node as mds
 mds=$i
 
 #on admin node, deploy ceph on all nodes  
 if [ `hostname` == ${mds} ] 
 then
+    umount /mnt/ceph 
+    pkill -9 ceph-fuse
+
+# clean up ceph installation first
+    for i in ${nodes[@]}
+    do
+        ssh root@${i} /etc/init.d/ceph killall
+    done
+    
+    ceph-deploy purge ${cluster}
+    ceph-deploy forgetkeys
+    for i in ${nodes[@]}
+    do
+        ssh root@${i} "/etc/init.d/ceph killall; umount /var/lib/ceph/osd/ceph-*; rm -rf /var/lib/ceph; rm -rf /var/run/ceph"
+    done
+
     yum install -y ceph-deploy  
     ceph-deploy install ${install_opt} ${cluster}
     #create ceph cluster  
@@ -57,7 +59,6 @@ then
     ceph-deploy  --overwrite-conf mon create-initial ${mds}
     ceph-deploy  --overwrite-conf mon create ${mds}
     ceph-deploy gatherkeys ${mds}  
-    ceph-deploy --overwrite-conf admin ${cluster}
 
 #create ceph osd  
     for i in ${nodes[@]}
@@ -65,6 +66,10 @@ then
         ceph-deploy disk zap ${i}:sd{c,d,e,f,g,h,i,j,k,l,m}
         ceph-deploy osd create ${i}:sd{c,d,e,f,g,h,i,j}:sd{k,l,m}
     done
+
+    ceph-deploy --overwrite-conf admin ${cluster}
+#create ceph mds  
+    ceph-deploy mds create ${mds}
     
 #start ceph on all nodes  
     for i in ${nodes[@]}
@@ -81,8 +86,6 @@ then
 #ceph health should be clean+ok  
     ceph health  
     
-#create ceph mds  
-    ceph-deploy mds create ${mds}
 #create pool called bd  
     ceph osd pool create bd 1600  
 #see if the pool is ok  
@@ -106,8 +109,6 @@ then
 #mount ceph fs  
     yum install -y ceph-fuse  
     mkdir -p /mnt/ceph 
-    umount /mnt/ceph 
-    pkill -9 ceph-fuse
     timeout 60s ceph-fuse -m ${mds}:6789 /mnt/ceph  
     ret=$?
     echo "mount status " ${ret}
