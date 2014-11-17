@@ -10,7 +10,7 @@ Host *
 EOF
 
 cd /home/hadoop
-
+pkill -9 java
 if [ ! -f hadoop-${HADOOP_VERSION}.tar.gz ]
 then
     wget -q http://www.us.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
@@ -146,6 +146,10 @@ cat > hadoop/etc/hadoop/yarn-site.xml << EOF
 <property>
   <name>yarn.nodemanager.aux-services</name>
   <value>mapreduce_shuffle</value>
+</property>
+<property>
+  <name>yarn.nodemanager.sleep-delay-before-sigkill.ms</name>
+  <value>10000</value>
 </property>
 </configuration>
 EOF
