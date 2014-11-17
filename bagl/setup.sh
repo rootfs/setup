@@ -59,7 +59,7 @@ cat > hadoop/etc/hadoop/core-site.xml.ceph << EOF
   </property>
   <property>
     <name>ceph.data.pools</name>
-    <value>cephfs_data</value>
+    <value>cephfs</value>
   </property>
   <property>
     <name>fs.AbstractFileSystem.ceph.impl</name>
