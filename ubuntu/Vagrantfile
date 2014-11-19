@@ -1,0 +1,11 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "http://files.vagrantup.com/precise64.box"
+
+  # Make sure the private key from the key pair is provided
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+  end
+end
